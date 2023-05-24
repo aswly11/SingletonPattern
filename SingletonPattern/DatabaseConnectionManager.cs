@@ -9,19 +9,26 @@ namespace SingletonPattern
     public class DatabaseConnectionManager
     {
         private static DatabaseConnectionManager _connectionManager;
+
+        private static readonly object lockObject = new object();
+
         public bool IsOpen { get; set; }
         private DatabaseConnectionManager()
         {
-            
+
         }
 
         public static DatabaseConnectionManager GetDatabaseConnectionManager()
         {
-            if(_connectionManager ==null)
+            lock(lockObject)
             {
-                _connectionManager = new DatabaseConnectionManager();
+                if (_connectionManager == null)
+                {
+                    _connectionManager = new DatabaseConnectionManager();
+                }
+                return _connectionManager;
             }
-            return _connectionManager;
+
         }
 
         public void DisplayStatus()
